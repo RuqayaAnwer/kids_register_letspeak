@@ -74,9 +74,8 @@ function App() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // بما أن الاستضافة ستكون على دومين خاص، سنستخدم مساراً نسبياً أو مسار الدومين لاحقاً
-      // هنا سنستخدم عنوان الـ API الذي أنشأناه
-      const response = await fetch('http://localhost/backend/api.php', {
+      // استخدام مسار نسبي ليعمل تلقائياً عند رفعه على الدومين
+      const response = await fetch('/backend/api.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
