@@ -37,6 +37,7 @@ function App() {
     childName: '',
     childAge: '',
     schoolLevel: '',
+    schoolGrade: '',
     parentName: '',
     phone: '',
     package: ''
@@ -52,13 +53,27 @@ function App() {
   };
 
   const nextStep = () => {
-    if (step === 1 && (!formData.childName || !formData.childAge || !formData.schoolLevel)) {
-      alert('يرجى تعبئة جميع بيانات الطفل');
-      return;
+    if (step === 1) {
+      if (!formData.childName || !formData.childAge || !formData.schoolLevel) {
+        alert('يرجى تعبئة جميع بيانات الطفل');
+        return;
+      }
+      if ((formData.schoolLevel === 'ابتدائي' || formData.schoolLevel === 'متوسط') && !formData.schoolGrade) {
+        alert('يرجى اختيار الصف الدراسي للطفل');
+        return;
+      }
     }
-    if (step === 2 && (!formData.parentName || !formData.phone)) {
-      alert('يرجى تعبئة جميع بيانات ولي الأمر');
-      return;
+    if (step === 2) {
+      if (!formData.parentName || !formData.phone) {
+        alert('يرجى تعبئة جميع بيانات ولي الأمر');
+        return;
+      }
+      // Phone validation: starts with 07 and exactly 11 digits
+      const phoneRegex = /^07\d{9}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقم ويبدأ بـ 07');
+        return;
+      }
     }
     if (step === 3 && !formData.package) {
       alert('يرجى اختيار باقة');
@@ -151,7 +166,7 @@ function App() {
                 className="form-input" 
                 name="schoolLevel"
                 value={formData.schoolLevel}
-                onChange={handleInputChange}
+                onChange={(e) => setFormData({ ...formData, schoolLevel: e.target.value, schoolGrade: '' })}
               >
                 <option value="">اختر المرحلة</option>
                 <option value="روضة">روضة (KG)</option>
@@ -159,6 +174,30 @@ function App() {
                 <option value="متوسط">متوسط</option>
               </select>
             </div>
+
+            {(formData.schoolLevel === 'ابتدائي' || formData.schoolLevel === 'متوسط') && (
+              <div className="form-group">
+                <label className="form-label">الصف الدراسي</label>
+                <select 
+                  className="form-input" 
+                  name="schoolGrade"
+                  value={formData.schoolGrade}
+                  onChange={handleInputChange}
+                >
+                  <option value="">اختر الصف</option>
+                  <option value="الأول">الأول</option>
+                  <option value="الثاني">الثاني</option>
+                  <option value="الثالث">الثالث</option>
+                  {formData.schoolLevel === 'ابتدائي' && (
+                    <>
+                      <option value="الرابع">الرابع</option>
+                      <option value="الخامس">الخامس</option>
+                      <option value="السادس">السادس</option>
+                    </>
+                  )}
+                </select>
+              </div>
+            )}
 
             <div className="btn-container">
               <button className="btn btn-primary" onClick={nextStep}>
