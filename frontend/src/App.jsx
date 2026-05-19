@@ -31,13 +31,16 @@ function App() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    package: '',
     childName: '',
     childAge: '',
-    schoolLevel: '',
-    schoolGrade: '',
-    parentName: '',
+    governorate: '',
     phone: '',
-    package: ''
+    telegram: '',
+    instagram: '',
+    source: '',
+    paymentMethod: '',
+    notes: ''
   });
 
   const handleInputChange = (e) => {
@@ -51,18 +54,20 @@ function App() {
 
   const nextStep = () => {
     if (step === 1) {
-      if (!formData.childName || !formData.childAge || !formData.schoolLevel) {
-        alert('يرجى تعبئة جميع بيانات الطفل');
-        return;
-      }
-      if ((formData.schoolLevel === 'ابتدائي' || formData.schoolLevel === 'متوسط') && !formData.schoolGrade) {
-        alert('يرجى اختيار الصف الدراسي للطفل');
+      if (!formData.package) {
+        alert('يرجى اختيار باقة للاستمرار');
         return;
       }
     }
     if (step === 2) {
-      if (!formData.parentName || !formData.phone) {
-        alert('يرجى تعبئة جميع بيانات ولي الأمر');
+      if (!formData.childName || !formData.childAge || !formData.governorate) {
+        alert('يرجى تعبئة جميع البيانات الأساسية للطفل');
+        return;
+      }
+    }
+    if (step === 3) {
+      if (!formData.phone || !formData.paymentMethod) {
+        alert('يرجى إدخال رقم الهاتف واختيار طريقة الدفع');
         return;
       }
       // Phone validation: starts with 07 and exactly 11 digits
@@ -71,10 +76,6 @@ function App() {
         alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 رقم ويبدأ بـ 07');
         return;
       }
-    }
-    if (step === 3 && !formData.package) {
-      alert('يرجى اختيار باقة');
-      return;
     }
     setStep(step + 1);
   };
@@ -128,127 +129,10 @@ function App() {
           </div>
         )}
 
-        {/* Step 1: Child Info */}
+        {/* Step 1: Packages */}
         {step === 1 && (
           <div className="step-content">
-            <h2 style={{marginBottom: '1.5rem', color: 'var(--primary)'}}>👧👦 معلومات البطل</h2>
-            
-            <div className="form-group">
-              <label className="form-label">اسم الطفل الثلاثي</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="childName"
-                value={formData.childName}
-                onChange={handleInputChange}
-                placeholder="أدخل اسم الطفل" 
-              />
-            </div>
-            
-            <div className="form-group">
-              <label className="form-label">عمر الطفل</label>
-              <input 
-                type="number" 
-                className="form-input" 
-                name="childAge"
-                value={formData.childAge}
-                onChange={handleInputChange}
-                placeholder="كم عمر البطل؟" 
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">المرحلة الدراسية الحالية</label>
-              <select 
-                className="form-input" 
-                name="schoolLevel"
-                value={formData.schoolLevel}
-                onChange={(e) => setFormData({ ...formData, schoolLevel: e.target.value, schoolGrade: '' })}
-              >
-                <option value="">اختر المرحلة</option>
-                <option value="روضة">روضة (KG)</option>
-                <option value="ابتدائي">ابتدائي</option>
-                <option value="متوسط">متوسط</option>
-              </select>
-            </div>
-
-            {(formData.schoolLevel === 'ابتدائي' || formData.schoolLevel === 'متوسط') && (
-              <div className="form-group">
-                <label className="form-label">الصف الدراسي</label>
-                <select 
-                  className="form-input" 
-                  name="schoolGrade"
-                  value={formData.schoolGrade}
-                  onChange={handleInputChange}
-                >
-                  <option value="">اختر الصف</option>
-                  <option value="الأول">الأول</option>
-                  <option value="الثاني">الثاني</option>
-                  <option value="الثالث">الثالث</option>
-                  {formData.schoolLevel === 'ابتدائي' && (
-                    <>
-                      <option value="الرابع">الرابع</option>
-                      <option value="الخامس">الخامس</option>
-                      <option value="السادس">السادس</option>
-                    </>
-                  )}
-                </select>
-              </div>
-            )}
-
-            <div className="btn-container">
-              <button className="btn btn-primary" onClick={nextStep}>
-                التالي <svg className="next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: Parent Info */}
-        {step === 2 && (
-          <div className="step-content">
-            <h2 style={{marginBottom: '1.5rem', color: 'var(--tertiary)'}}>👨‍👩‍👧 معلومات ولي الأمر</h2>
-            
-            <div className="form-group">
-              <label className="form-label">اسم ولي الأمر</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                name="parentName"
-                value={formData.parentName}
-                onChange={handleInputChange}
-                placeholder="الاسم الكامل لولي الأمر" 
-              />
-            </div>
-            
-            <div className="form-group">
-              <label className="form-label">رقم الهاتف (واتساب)</label>
-              <input 
-                type="tel" 
-                className="form-input" 
-                dir="ltr"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="+964..." 
-              />
-            </div>
-
-            <div className="btn-container">
-              <button className="btn btn-secondary" onClick={prevStep}>
-                ➡️ السابق
-              </button>
-              <button className="btn btn-primary" onClick={nextStep}>
-                التالي <svg className="next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Packages */}
-        {step === 3 && (
-          <div className="step-content">
-            <h2 style={{marginBottom: '1.5rem', color: 'var(--secondary)'}}>🎁 الباقات المتاحة</h2>
+            <h2 style={{marginBottom: '1.5rem', color: 'var(--secondary)'}}>🎁 اختيار الباقة</h2>
             
             <div className="packages-grid">
               <div 
@@ -268,6 +152,170 @@ function App() {
                 <div className="package-name">باقة السرعة</div>
                 <div className="package-price">300,000 <span>د.ع</span></div>
               </div>
+            </div>
+
+            <div className="btn-container">
+              <button className="btn btn-primary" onClick={nextStep} style={{width: '100%'}}>
+                التالي <svg className="next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Child Info */}
+        {step === 2 && (
+          <div className="step-content">
+            <h2 style={{marginBottom: '1.5rem', color: 'var(--primary)'}}>👧👦 بيانات الطفل الأساسية</h2>
+            
+            <div className="form-group">
+              <label className="form-label">اسم الطفل الثلاثي</label>
+              <input 
+                type="text" 
+                className="form-input" 
+                name="childName"
+                value={formData.childName}
+                onChange={handleInputChange}
+                placeholder="أدخل اسم الطفل الثلاثي" 
+              />
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">عمر الطفل</label>
+              <select 
+                className="form-input" 
+                name="childAge"
+                value={formData.childAge}
+                onChange={handleInputChange}
+              >
+                <option value="">اختر العمر</option>
+                {[5,6,7,8,9,10,11,12].map(age => (
+                  <option key={age} value={age}>{age} سنوات</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">المحافظة</label>
+              <select 
+                className="form-input" 
+                name="governorate"
+                value={formData.governorate}
+                onChange={handleInputChange}
+              >
+                <option value="">اختر المحافظة</option>
+                {['بغداد','البصرة','نينوى','أربيل','السليمانية','دهوك','كركوك','صلاح الدين','الأنبار','ديالى','كربلاء','النجف','بابل','واسط','ميسان','ذي قار','الديوانية','المثنى'].map(gov => (
+                  <option key={gov} value={gov}>{gov}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="btn-container">
+              <button className="btn btn-secondary" onClick={prevStep}>
+                ➡️ السابق
+              </button>
+              <button className="btn btn-primary" onClick={nextStep}>
+                التالي <svg className="next-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Contact & Payment */}
+        {step === 3 && (
+          <div className="step-content">
+            <h2 style={{marginBottom: '1.5rem', color: 'var(--tertiary)'}}>📞 التواصل والدفع</h2>
+            
+            <div className="form-group">
+              <label className="form-label">رقم الموبايل (واتساب)</label>
+              <input 
+                type="tel" 
+                className="form-input" 
+                dir="ltr"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="07..." 
+              />
+            </div>
+
+            <div className="form-group" style={{display: 'flex', gap: '1rem'}}>
+              <div style={{flex: 1}}>
+                <label className="form-label">معرف التليگرام</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  name="telegram"
+                  value={formData.telegram}
+                  onChange={handleInputChange}
+                  placeholder="@username" 
+                />
+              </div>
+              <div style={{flex: 1}}>
+                <label className="form-label">معرف الانستگرام</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  name="instagram"
+                  value={formData.instagram}
+                  onChange={handleInputChange}
+                  placeholder="@username" 
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">كيف سمعت بنا؟</label>
+              <select 
+                className="form-input" 
+                name="source"
+                value={formData.source}
+                onChange={handleInputChange}
+              >
+                <option value="">اختر...</option>
+                <option value="فيسبوك">فيسبوك</option>
+                <option value="انستگرام">انستگرام</option>
+                <option value="تيك توك">تيك توك</option>
+                <option value="صديق">عن طريق صديق</option>
+                <option value="يوتيوب">يوتيوب</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">طريقة دفع رسوم الاشتراك</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem', padding: '0.5rem'}}>
+                {[
+                  'مندوب توصيل لجميع المحافظات 5 الاف',
+                  'زين كاش 07901768412',
+                  'كي كارد او ماستر كارد',
+                  'بنك TBI',
+                  'بنك FIB'
+                ].map((method) => (
+                  <label key={method} style={{display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer'}}>
+                    <input 
+                      type="radio" 
+                      name="paymentMethod" 
+                      value={method}
+                      checked={formData.paymentMethod === method}
+                      onChange={handleInputChange}
+                      style={{accentColor: 'var(--primary)', transform: 'scale(1.2)'}}
+                    />
+                    <span style={{fontSize: '0.95rem'}}>{method}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">اي ملاحظات اخرى؟ (اختياري)</label>
+              <textarea 
+                className="form-input" 
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                placeholder="اكتب ملاحظاتك هنا..."
+                rows="3"
+                style={{resize: 'vertical'}}
+              ></textarea>
             </div>
 
             <div className="btn-container">
